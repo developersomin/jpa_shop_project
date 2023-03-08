@@ -7,15 +7,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import shop.jpashop.dto.MemberFormDto;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "member")
 @ToString(of = {"name","email","address"})
-public class Member {
+public class Member extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name = "member_id")
