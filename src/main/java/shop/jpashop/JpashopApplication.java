@@ -23,4 +23,6 @@ public class JpashopApplication {
 		return new AuditorAwareImpl();
 	}
 
+
+
 }
