@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/default}">
+      layout:decorate="~{layouts/layout1}">
 
 <!-- 사용자 스크립트 추가 -->
 <th:block layout:fragment="script">
@@ -25,20 +25,23 @@
               + "&searchBy=" + searchBy
               + "&searchQuery=" + searchQuery;
     }
+
   </script>
 </th:block>
 
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
   <style>
-
+    select{
+      margin-right:10px;
+    }
   </style>
 </th:block>
 
 <div layout:fragment="content">
 
   <form th:action="@{'/admin/items/' + ${items.number}}" role="form" method="get" th:object="${items}">
-    <table class="table table-hover">
+    <table class="table">
       <thead>
       <tr>
         <td>상품아이디</td>
@@ -52,11 +55,11 @@
       <tr th:each="item, status: ${items.getContent()}">
         <td th:text="${item.id}"></td>
         <td>
-          <a th:href="'/item/'+${item.id}" th:text="${item.itemNm}"></a>
+          <a th:href="'/admin/item/'+${item.id}" th:text="${item.itemName}"></a>
         </td>
-        <td th:text="${item.itemSellStatus.toString().equals('SELL')} ? '판매중' : '품절'"></td>
+        <td th:text="${item.itemSellStatus == T(shop.jpashop.entity.ItemSellStatus).SELL} ? '판매중' : '품절'"></td>
         <td th:text="${item.createdBy}"></td>
-        <td th:text="${item.regTime}"></td>
+        <td th:text="${item.createDate}"></td>
       </tr>
       </tbody>
     </table>
@@ -100,8 +103,8 @@
         <option value="itemNm">상품명</option>
         <option value="createdBy">등록자</option>
       </select>
-      <input th:field="*{searchQuery}" type="text" class="form-control w-25" placeholder="검색어를 입력해주세요">
-      <button id="searchBtn" type="submit" class="btn btn-outline-dark">검색</button>
+      <input th:field="*{searchQuery}" type="text" class="form-control" placeholder="검색어를 입력해주세요">
+      <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
     </div>
   </form>
 
