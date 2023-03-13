@@ -54,10 +54,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     private BooleanExpression searchByLike(String searchBy, String searchQuery) {
 
         if (StringUtils.equals("itemName",searchBy)) {
-            System.out.println("쿼리실행 직전");
             return item.itemName.like("%" + searchQuery + "%");
         } else if (StringUtils.equals("createBy",searchBy)) {
-            System.out.println("쿼리실행 직전");
             return item.createBy.like("%" + searchQuery + "%");
         } else {
             return null;

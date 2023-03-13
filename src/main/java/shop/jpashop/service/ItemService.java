@@ -5,6 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import shop.jpashop.dto.ItemFormDto;
 import shop.jpashop.dto.ItemImgDto;
@@ -42,14 +45,14 @@ public class ItemService {
             } else {
                 itemImg.setThumbnailImg("N");
             }
-            itemImgService.saveItemImg(itemImg,itemImgFileList.get(i));
+            itemImgService.saveItemImg(itemImg, itemImgFileList.get(i));
 
         }
 
         return item.getId();
     }
 
-    public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
+    public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
         return itemRepository.getAdminItemPage(itemSearchDto, pageable);
     }
 
@@ -57,14 +60,11 @@ public class ItemService {
         return itemRepository.getMainItemPage(itemSearchDto, pageable);
     }
 
+    @Transactional
     public ItemFormDto getItemDtl(Long itemId) {
 
+        List<ItemImg> itemImgList = itemImgRepository.findByItemIdOrderByIdAsc(itemId);
 
-
-        List<ItemImg> itemImgList = itemImgRepository.findItemImgListById(itemId);
-        for (ItemImg itemImg : itemImgList) {
-            System.out.println("IMG="+itemImg.getImgName());
-        }
         List<ItemImgDto> itemImgDtoList = new ArrayList<>();
         List<Long> itemImgIds = new ArrayList<>();
 
@@ -72,12 +72,13 @@ public class ItemService {
 
             ItemImgDto itemImgDto = ItemImgDto.of(itemImg);
             itemImgDtoList.add(itemImgDto);
+            itemImgIds.add(itemImgDto.getId());
         }
 
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new EntityExistsException("아이템이 없습니다."));
         ItemFormDto itemFormDto = ItemFormDto.of(item);
         itemFormDto.setItemImgDtoList(itemImgDtoList);
-
+        itemFormDto.setItemImgIds(itemImgIds);
         return itemFormDto;
     }
 
@@ -89,14 +90,11 @@ public class ItemService {
         item.updateItem(itemFormDto);
         List<Long> itemImgIds = itemFormDto.getItemImgIds();
 
-        for (Long id : itemImgIds) {
-
-            System.out.println(id);
-        }
-
         for (int i = 0; i < itemImgFileList.size(); i++) {
-            itemImgService.updateItemImg(itemImgIds.get(i),itemImgFileList.get(i));
+            itemImgService.updateItemImg(itemImgIds.get(i), itemImgFileList.get(i));
         }
         return item.getId();
     }
+
+
 }

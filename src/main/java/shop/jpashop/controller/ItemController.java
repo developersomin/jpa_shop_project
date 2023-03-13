@@ -61,7 +61,8 @@ public class ItemController {
 
     @PostMapping("/admin/item/{itemId}")
     public String itemUpdate(@Valid ItemFormDto itemFormDto, BindingResult bindingResult,
-                             @RequestParam List<MultipartFile> itemImgFileList, Model model, @PathVariable Long itemId){
+                             @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList, Model model){
+
         //파일들을 보낼때 MultipartFile 폼으로 보내기 때문에 requestParam을 사용
 
 
@@ -83,9 +84,10 @@ public class ItemController {
     }
 
     @GetMapping("/admin/item/{itemId}")
-    public String itemDtl(Model model, @PathVariable("itemId") Long itemId) {
+    public String itemAdDtl(Model model, @PathVariable("itemId") Long itemId) {
         try {
             ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
+
             model.addAttribute("itemFormDto", itemFormDto);
 
         } catch (EntityNotFoundException e) {
@@ -104,14 +106,19 @@ public class ItemController {
         Page<Item> items = itemService.getAdminItemPage(itemSearchDto, pageable);
 
 
-        System.out.println("getNumber=" + items.getNumber());
-        System.out.println("getTotalPage=" + items.getTotalPages());
-
         model.addAttribute("items", items);
         model.addAttribute("itemSearchDto", itemSearchDto);
         model.addAttribute("maxPage", 5);
 
         return "item/itemMng";
+    }
+
+    @GetMapping("/item/{itemId}")
+    public String itemDtl(Model model, @PathVariable("itemId") Long itemId) {
+        ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
+        model.addAttribute("item", itemFormDto);
+        return "item/itemDtl";
+
     }
 
 
