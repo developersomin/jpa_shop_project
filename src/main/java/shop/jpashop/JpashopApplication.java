@@ -11,17 +11,14 @@ import shop.jpashop.config.AuditorAwareImpl;
 
 import java.util.Optional;
 
-@EnableJpaAuditing
+
 @SpringBootApplication
 public class JpashopApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(JpashopApplication.class, args);
 	}
-	@Bean
-	public AuditorAware<String> auditorProvider(){
-		return new AuditorAwareImpl();
-	}
+
 
 
 

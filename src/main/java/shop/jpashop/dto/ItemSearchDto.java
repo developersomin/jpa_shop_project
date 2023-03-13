@@ -14,5 +14,5 @@ public class ItemSearchDto {
 
     private String searchBy;
 
-    private String searchQuery = "";
+    private String searchQuery="";
 }
