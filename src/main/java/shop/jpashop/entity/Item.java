@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import shop.jpashop.dto.ItemFormDto;
+import shop.jpashop.execption.OutOfStockException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -36,15 +37,9 @@ public class Item extends BaseEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<ItemImg> itemImgList = new ArrayList<>();
 
-
-
     @Enumerated(EnumType.STRING)
     private ItemSellStatus itemSellStatus;
 
-    /*public void addItemImg(ItemImg itemImg){
-        itemImgList.add(itemImg);
-        itemImg.setItem(this);
-    }*/
 
     public void updateItem(ItemFormDto itemFormDto){
         this.itemName = itemFormDto.getItemName();
@@ -53,6 +48,14 @@ public class Item extends BaseEntity {
         this.itemDetail = itemFormDto.getItemDetail();
         this.itemSellStatus = itemFormDto.getItemSellStatus();
         }
+
+    public void removeStock(int stockQuantity) {
+        int restStock = this.stockQuantity - stockQuantity;
+        if (restStock < 0) {
+            throw new OutOfStockException("상품 재고가 부족합니다. 현재 재고 : " + restStock);
+        }
+        this.stockQuantity = restStock;
+    }
 }
 
 
